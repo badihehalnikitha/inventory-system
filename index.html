@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockWise | Inventory Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="StockWise home">
+        <span class="brand-mark">S</span>
+        <span>stock<span class="brand-light">wise</span><small>INVENTORY MANAGER</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="navigation">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">◫</span> Dashboard</button>
+        <button class="nav-item" data-view="products"><span class="nav-icon">▦</span> Products <span class="nav-count" id="navProductCount">0</span></button>
+        <button class="nav-item" data-view="alerts"><span class="nav-icon">♧</span> Stock alerts <span class="alert-dot"></span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <div class="help-icon">✦</div>
+          <strong>Keep stock in check</strong>
+          <p>Stay on top of your inventory and never miss a restock.</p>
+          <button id="helpAddBtn">＋ Add a product</button>
+        </div>
+        <div class="profile">
+          <div class="avatar">SW</div>
+          <div><strong>Workspace Admin</strong><small>Inventory manager</small></div>
+          <span class="profile-dots">•••</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbPage">Dashboard</strong></div>
+        <div class="top-actions">
+          <span class="live-dot"></span><span class="saved-label">Your workspace</span>
+          <button class="icon-button" title="Stock alerts" id="topAlertBtn">♧<i id="alertBadge">0</i></button>
+          <div class="top-avatar">SW</div>
+        </div>
+      </header>
+
+      <section class="page" id="dashboardView">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> INVENTORY OVERVIEW</div>
+            <h1>Good to see you<span class="green-dot">.</span></h1>
+            <p class="subheading">Here's what's happening with your inventory today.</p>
+          </div>
+          <button class="primary-button" id="addProductBtn"><span>＋</span> Add product</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total products</span><span class="stat-icon green-bg">▦</span></div>
+            <div class="stat-number" id="totalProducts">0</div>
+            <div class="stat-foot"><span class="mini-indicator">↗</span> Unique products in catalog</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Total units in stock</span><span class="stat-icon mint-bg">▤</span></div>
+            <div class="stat-number" id="totalUnits">0</div>
+            <div class="stat-foot">Across all listed products</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Inventory value</span><span class="stat-icon pale-bg">₹</span></div>
+            <div class="stat-number" id="inventoryValue">₹0</div>
+            <div class="stat-foot">Based on current stock quantity</div>
+          </article>
+          <article class="stat-card alert-stat">
+            <div class="stat-top"><span>Low stock items</span><span class="stat-icon orange-bg">!</span></div>
+            <div class="stat-number" id="lowStockCount">0</div>
+            <div class="stat-foot"><span class="orange-text">Needs attention</span> below reorder level</div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel products-panel">
+            <div class="panel-heading">
+              <div><h2>Product inventory</h2><p>A quick look at your products and stock levels.</p></div>
+              <button class="text-button" id="viewAllBtn">View all <span>→</span></button>
+            </div>
+            <div class="table-tools">
+              <label class="search-box"><span>⌕</span><input id="dashboardSearch" type="search" placeholder="Search products..."></label>
+              <select id="dashboardCategory" aria-label="Filter by category"><option value="">All categories</option></select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>PRODUCT</th><th>PRICE</th><th>QUANTITY</th><th>STATUS</th><th></th></tr></thead>
+                <tbody id="dashboardProducts"></tbody>
+              </table>
+            </div>
+            <div class="empty-state hidden" id="dashboardEmpty"><div class="empty-art">▦</div><strong>No products yet</strong><p>Add your first product to start tracking inventory.</p><button class="primary-button small" id="emptyAddBtn">＋ Add first product</button></div>
+          </section>
+          <section class="panel category-panel">
+            <div class="panel-heading"><div><h2>Stock by category</h2><p>Quantity distribution</p></div><span class="round-leaf">✳</span></div>
+            <div id="categoryChart" class="category-chart"></div>
+            <div class="chart-footer"><span class="chart-dot"></span> Units currently in stock</div>
+            <div class="tip-card"><span class="tip-spark">✦</span><div><strong>Stock tip</strong><p>Set a reorder level for every product to catch shortages early.</p></div></div>
+          </section>
+        </div>
+        <section class="panel low-panel">
+          <div class="panel-heading"><div><h2>Needs your attention</h2><p>Products at or below their reorder level.</p></div><button class="text-button" id="viewAlertsBtn">See alerts <span>→</span></button></div>
+          <div class="alert-list" id="dashboardAlerts"></div>
+        </section>
+        <footer>© 2026 StockWise <span>Inventory, made simple.</span></footer>
+      </section>
+
+      <section class="page hidden" id="productsView">
+        <div class="welcome-row">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR CATALOG</div><h1>All products<span class="green-dot">.</span></h1><p class="subheading">Manage every item in your inventory from one place.</p></div>
+          <button class="primary-button" id="addProductBtn2"><span>＋</span> Add product</button>
+        </div>
+        <section class="panel full-products-panel">
+          <div class="table-tools product-tools">
+            <label class="search-box"><span>⌕</span><input id="productsSearch" type="search" placeholder="Search by product name or ID..."></label>
+            <select id="productsCategory" aria-label="Filter by category"><option value="">All categories</option></select>
+            <select id="productsStatus" aria-label="Filter by stock status"><option value="">All stock statuses</option><option value="in">In stock</option><option value="low">Low stock</option></select>
+          </div>
+          <div class="table-wrap">
+            <table class="all-products-table">
+              <thead><tr><th>PRODUCT</th><th>PRODUCT ID</th><th>CATEGORY</th><th>PRICE</th><th>QUANTITY</th><th>REORDER LEVEL</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+              <tbody id="allProductsBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state hidden" id="productsEmpty"><div class="empty-art">▦</div><strong>No matching products</strong><p>Try another search or add a new product.</p><button class="primary-button small" id="productsEmptyAdd">＋ Add product</button></div>
+          <div class="table-bottom"><span id="productCountLabel">Showing 0 products</span><span>Connected to MySQL database</span></div>
+        </section>
+        <footer>© 2026 StockWise <span>Inventory, made simple.</span></footer>
+      </section>
+
+      <section class="page hidden" id="alertsView">
+        <div class="welcome-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> RESTOCK CENTER</div><h1>Stock alerts<span class="green-dot">.</span></h1><p class="subheading">Keep products available by checking these items.</p></div><button class="primary-button" id="alertAddBtn"><span>＋</span> Add product</button></div>
+        <section class="panel low-panel alerts-page-panel"><div class="panel-heading"><div><h2>Products to restock</h2><p>Stock at or below your chosen reorder level.</p></div><span class="alert-pill" id="alertsPageCount">0 items</span></div><div class="alert-list alert-list-page" id="allAlerts"></div><div class="empty-state hidden" id="alertsEmpty"><div class="empty-art">✓</div><strong>You're all stocked up!</strong><p>No products are currently at or below their reorder level.</p></div></section>
+        <footer>© 2026 StockWise <span>Inventory, made simple.</span></footer>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="productModal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> PRODUCT DETAILS</div><h2 id="modalTitle">Add a product</h2><p>Fill in the details below to update your catalog.</p></div><button class="close-button" id="closeModal" aria-label="Close">×</button></div>
+      <form id="productForm">
+        <input type="hidden" id="editingId">
+        <div class="form-grid">
+          <label class="form-field"><span>Product ID <b>*</b></span><input id="productId" type="number" min="1" step="1" placeholder="e.g. 1001" required><small>Must be unique</small></label>
+          <label class="form-field"><span>Product name <b>*</b></span><input id="productName" type="text" maxlength="100" placeholder="e.g. Wireless headphones" required></label>
+          <label class="form-field"><span>Category <b>*</b></span><input id="productCategory" type="text" maxlength="50" list="categoryOptions" placeholder="e.g. Electronics" required><datalist id="categoryOptions"><option>Electronics</option><option>Accessories</option><option>Stationery</option><option>Home & Living</option><option>Fashion</option></datalist></label>
+          <label class="form-field"><span>Price (₹) <b>*</b></span><input id="productPrice" type="number" min="0" step="0.01" placeholder="0.00" required></label>
+          <label class="form-field"><span>Quantity <b>*</b></span><input id="productQuantity" type="number" min="0" step="1" placeholder="0" required></label>
+          <label class="form-field"><span>Reorder level <b>*</b></span><input id="productReorder" type="number" min="0" step="1" value="10" required><small>Alert when quantity is at or below this level</small></label>
+        </div>
+        <div class="form-note"><span>✳</span> Stock status is calculated automatically. Product pictures are assigned by product/category in the interface; your database keeps the six inventory fields.</div>
+        <div class="form-actions"><button type="button" class="secondary-button" id="cancelModal">Cancel</button><button type="submit" class="primary-button"><span>✓</span> Save product</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>

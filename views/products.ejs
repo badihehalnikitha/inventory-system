@@ -1,0 +1,41 @@
+<%- include('header', { title: 'Products' }) %>
+<h1>Products</h1>
+<form class="filters" method="get" action="/products">
+  <input type="search" name="q" value="<%= q %>" placeholder="Search by name" aria-label="Search by name">
+  <select name="category" aria-label="Category">
+    <option value="">All categories</option>
+    <% categories.forEach(c => { %>
+      <option value="<%= c %>" <%= c === category ? 'selected' : '' %>><%= c %></option>
+    <% }) %>
+  </select>
+  <button type="submit">Filter</button>
+</form>
+
+<% if (products.length === 0) { %>
+  <p class="empty">No products found. <a href="/products/new">Add your first product</a>.</p>
+<% } else { %>
+<div class="scroll">
+<table>
+  <thead><tr><th>ID</th><th>Product</th><th>Category</th><th class="r">Price</th><th class="r">In stock</th><th class="r">Reorder level</th><th></th></tr></thead>
+  <tbody>
+  <% products.forEach(p => { %>
+    <tr>
+      <td><%= p.product_id %></td>
+      <td><%= p.product_name %></td>
+      <td><%= p.category %></td>
+      <td class="r">₹<%= Number(p.price).toFixed(2) %></td>
+      <td class="r <%= p.quantity <= p.reorder_level ? 'low' : '' %>"><%= p.quantity %></td>
+      <td class="r"><%= p.reorder_level %></td>
+      <td class="r actions">
+        <a href="/products/<%= p.product_id %>/edit">Edit</a>
+        <form method="post" action="/products/<%= p.product_id %>/delete" data-name="<%= p.product_name %>" onsubmit="return confirm('Delete ' + this.dataset.name + '? This cannot be undone.')">
+          <button class="link danger" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<% } %>
+<%- include('footer') %>

@@ -1,0 +1,30 @@
+<%- include('header', { title: 'Dashboard' }) %>
+<h1>Dashboard</h1>
+<section class="stats">
+  <div><span class="num"><%= stats.total_products %></span> products</div>
+  <div><span class="num">₹<%= Number(stats.stock_value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span> stock value</div>
+  <div class="<%= stats.low_count > 0 ? 'warn' : '' %>"><span class="num"><%= stats.low_count %></span> need reordering</div>
+</section>
+
+<h2>Reorder now</h2>
+<% if (low.length === 0) { %>
+  <p class="empty">All products are above their reorder level.</p>
+<% } else { %>
+<div class="scroll">
+<table>
+  <thead><tr><th>Product</th><th>Category</th><th class="r">In stock</th><th class="r">Reorder level</th><th></th></tr></thead>
+  <tbody>
+  <% low.forEach(p => { %>
+    <tr>
+      <td><%= p.product_name %></td>
+      <td><%= p.category %></td>
+      <td class="r low"><%= p.quantity %></td>
+      <td class="r"><%= p.reorder_level %></td>
+      <td class="r"><a href="/products/<%= p.product_id %>/edit">Update stock</a></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<% } %>
+<%- include('footer') %>
