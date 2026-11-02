@@ -1,22 +1,41 @@
+require("dotenv").config();
+
 const express = require("express");
 const mysql = require("mysql2");
+const cors = require("cors");
 const path = require("path");
 
 const app = express();
 
+// Middleware
+app.use(cors());
 app.use(express.json());
+
+// Serve HTML, CSS and JavaScript files
 app.use(express.static(__dirname));
 
-// Connect to your existing database
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "inventorysystem",
-    port: 3306
+// Homepage
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Test the connection
+// Cloud MySQL connection
+const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT) || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    ssl: process.env.DB_SSL === "true"
+        ? { rejectUnauthorized: true }
+        : undefined
+});
+
+
+// Test database connection
 db.getConnection((err, connection) => {
     if (err) {
         console.error("Database connection failed:", err.message);
@@ -37,7 +56,9 @@ app.get("/api/products", (req, res) => {
 
 // Insert a product
 app.post("/api/products", (req, res) => {
-    const { product_name, category, price, quantity, reorder_level } = req.body;
+    const {
+        product_name, category, price, quantity, reorder_level
+    } = req.body;
 
     const sql = `INSERT INTO products
         (product_name, category, price, quantity, reorder_level)
@@ -47,6 +68,7 @@ app.post("/api/products", (req, res) => {
         [product_name, category, price, quantity, reorder_level],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
+
             res.status(201).json({
                 message: "Product inserted successfully",
                 product_id: result.insertId
@@ -57,7 +79,9 @@ app.post("/api/products", (req, res) => {
 
 // Update a product
 app.put("/api/products/:id", (req, res) => {
-    const { product_name, category, price, quantity, reorder_level } = req.body;
+    const {
+        product_name, category, price, quantity, reorder_level
+    } = req.body;
 
     const sql = `UPDATE products SET
         product_name = ?, category = ?, price = ?,
@@ -68,9 +92,11 @@ app.put("/api/products/:id", (req, res) => {
         [product_name, category, price, quantity, reorder_level, req.params.id],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
+
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: "Product not found" });
             }
+
             res.json({ message: "Product updated successfully" });
         }
     );
@@ -83,14 +109,19 @@ app.delete("/api/products/:id", (req, res) => {
         [req.params.id],
         (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
+
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: "Product not found" });
             }
+
             res.json({ message: "Product deleted successfully" });
         }
     );
 });
 
-app.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+// Render port
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
