@@ -1,4 +1,4 @@
-const API_BASE = "/api/products";
+const API_BASE = "https://inventory-system-nqba.onrender.com/api/products";
 const fallbackImages = {
   electronics: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=160&q=80",
   accessories: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=160&q=80",
