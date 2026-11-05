@@ -1,9 +1,12 @@
+
 {
   "name": "stockwise",
   "version": "1.0.0",
+  "description": "Inventory Management System using Node.js, Express and MySQL",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

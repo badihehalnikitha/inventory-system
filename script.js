@@ -147,7 +147,7 @@ async function refreshProducts() {
     products = await apiRequest(API_BASE);
     render();
   } catch (error) {
-    showToast("Cannot connect to MySQL backend. Start the Flask server and check database settings.");
+    showToast("Please start the Node.js server first!");
     console.error(error);
   }
 }

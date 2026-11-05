@@ -2,31 +2,32 @@
 require("dotenv").config();
 
 const express = require("express");
+const mysql = require("mysql2");
 const cors = require("cors");
-const mysql = require("mysql2/promise");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve frontend files
 app.use(express.static(__dirname));
 
+// Homepage
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Cloud MySQL connection
 const db = mysql.createPool({
     host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: {
-         ca: process.env.DB_SSL_CA?.replace(/\\n/g, "\n"),
-         rejectUnauthorized: true
-    },
+    port: Number(process.env.DB_PORT) || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
