@@ -203,11 +203,3 @@ document.addEventListener("click", event => {
 });
 document.addEventListener("keydown", event => { if (event.key === "Escape") closeModal(); });
 refreshProducts();
-async function loadProducts() {
-    const response = await fetch("/api/products");
-    const products = await response.json();
-
-    console.log(products);
-}
-
-loadProducts();
