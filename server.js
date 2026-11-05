@@ -257,12 +257,13 @@ async function startServer() {
 
         console.log("MySQL connected successfully!");
 
-        connection.release();
+    ;
+       
 
-        app.listen(PORT, () => {
-            console.log(`StockWise server running on port ${PORT}`);
-            console.log(`Open http://localhost:${PORT}`);
-        });
+app.listen(PORT, () => {
+    console.log(`StockWise server running on port ${PORT}`);
+    console.log(`Open http://localhost:${PORT}`);
+});
 
     } catch (error) {
         console.error("MySQL connection failed:", error.message);
