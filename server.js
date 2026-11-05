@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 const path = require("path");
 
 const app = express();
@@ -259,9 +259,9 @@ app.delete("/api/products/:id", async (req, res) => {
 // Start server after checking database connection
 async function startServer() {
     try {
-       await db.promise().query("SELECT 1");
+        await db.query("SELECT 1");
 
-console.log("MySQL connected successfully!");
+        console.log("MySQL connected successfully!");
 
         app.listen(PORT, () => {
             console.log(`StockWise server running on port ${PORT}`);
