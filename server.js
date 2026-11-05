@@ -259,11 +259,9 @@ app.delete("/api/products/:id", async (req, res) => {
 // Start server after checking database connection
 async function startServer() {
     try {
-        const connection = await db.getConnection();
+       await db.promise().query("SELECT 1");
 
-        console.log("MySQL connected successfully!");
-
-        connection.release();
+console.log("MySQL connected successfully!");
 
         app.listen(PORT, () => {
             console.log(`StockWise server running on port ${PORT}`);
