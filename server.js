@@ -2,17 +2,23 @@
 require("dotenv").config();
 
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
+const mysql = require("mysql2");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS configuration
+app.use(cors({
+    origin: "https://badihehalnikitha.github.io",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // Serve frontend files
 app.use(express.static(__dirname));
 
@@ -257,13 +263,11 @@ async function startServer() {
 
         console.log("MySQL connected successfully!");
 
-    ;
-       
+        connection.release();
 
-app.listen(PORT, () => {
-    console.log(`StockWise server running on port ${PORT}`);
-    console.log(`Open http://localhost:${PORT}`);
-});
+        app.listen(PORT, () => {
+            console.log(`StockWise server running on port ${PORT}`);
+        });
 
     } catch (error) {
         console.error("MySQL connection failed:", error.message);
